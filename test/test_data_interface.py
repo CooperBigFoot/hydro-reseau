@@ -43,7 +43,7 @@ class TestCAMELSCHDataset:
         static_df.write_parquet(data_dir / "static_attributes_merged.parquet")
 
         # Create sample time series files
-        dates = pl.date_range(date(2000, 1, 1), date(2000, 12, 31), interval="1d", eager=True).alias("date")
+        dates = pl.date_range(date(2000, 1, 1), date(2000, 12, 31), interval="1d", eager=True).alias("date").dt.to_string("%Y-%m-%d")
 
         # Observation data
         for catchment_id in [2125, 2126, 2127]:

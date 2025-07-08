@@ -147,25 +147,31 @@ class CAMELSCHDataset:
 
         logger.debug(f"Reading time series from {len(paths)} files")
 
-        # Read data using Polars
-        df = pl.scan_parquet(paths) if lazy else pl.read_parquet(paths)
-
-        # Add catchment_id column based on file path
+        # Read data and add catchment_id column
         if lazy:
-            # For lazy evaluation, we need to handle this differently
-            # Read each file separately and add catchment_id
+            # For lazy evaluation, read each file separately and add catchment_id
             lazy_frames = []
             for catchment_id, path in zip(catchment_ids, paths, strict=False):
-                lf = pl.scan_parquet(path).with_columns(pl.lit(catchment_id).alias("catchment_id"))
+                lf = pl.scan_parquet(path).with_columns(
+                    pl.lit(catchment_id).alias("catchment_id")
+                )
                 lazy_frames.append(lf)
             df = pl.concat(lazy_frames)
+            # Convert date column after concatenation
+            df = df.with_columns(pl.col("date").str.to_date())
         else:
             # For eager evaluation, read and concatenate
             dfs = []
             for catchment_id, path in zip(catchment_ids, paths, strict=False):
-                catchment_df = pl.read_parquet(path).with_columns(pl.lit(catchment_id).alias("catchment_id"))
+                catchment_df = pl.read_parquet(path)
+                # Add catchment_id only, don't convert date yet
+                catchment_df = catchment_df.with_columns(
+                    pl.lit(catchment_id).alias("catchment_id")
+                )
                 dfs.append(catchment_df)
             df = pl.concat(dfs)
+            # Convert date column after concatenation
+            df = df.with_columns(pl.col("date").str.to_date())
 
         # Filter by date range if specified
         if start_date or end_date:

@@ -7,7 +7,9 @@
       "Bash(ls:*)",
       "Bash(uv run:*)",
       "Bash(rm:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(gemini:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
