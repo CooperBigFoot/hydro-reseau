@@ -5,3 +5,56 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+
+
+[build-system]
+requires = ["setuptools>=64.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[dependency-groups]
+dev = ["pytest>=8.3.5", "ruff>=0.11.8", "ty>=0.0.1a12"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# RUFF Configuration
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+fix = false
+exclude = ["notebooks/", "experiments/"]
+
+[tool.ruff.lint]
+# Essential rules: errors, warnings, naming, imports, modern Python, bugs, comprehensions, simplifications
+select = ["E", "F", "W", "N", "I", "UP", "B", "C4", "SIM"]
+ignore = [
+    "E501", # Line too long (let formatter handle this)
+    "N803", # Argument name should be lowercase - ML convention allows X, Y
+    "N806", # Variable in function should be lowercase - ML convention allows X, Y
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# TY Configuration  
+[tool.ty]
+
+
+[tool.ty.rules]
+possibly-unresolved-reference = "warn"
+
+# Pytest Configuration
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+    "--ignore=notebooks/",
+    "--ignore=experiments/",
+]
