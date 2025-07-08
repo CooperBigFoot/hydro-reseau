@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(python -m pytest test/test_first.py -v)",
+      "Bash(python:*)",
+      "Bash(ls:*)",
+      "Bash(uv run:*)",
+      "Bash(rm:*)",
+      "Bash(mkdir:*)"
+    ],
+    "deny": []
+  }
+}
